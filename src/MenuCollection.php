@@ -1,13 +1,13 @@
 <?php
-// @todo add enabled customisation
-
 namespace Dukhanin\Menu;
 
 use Illuminate\Support\Collection;
 
 class MenuCollection extends Collection
 {
+
     public $itemClass = 'Dukhanin\Menu\MenuItem';
+
 
     public function __construct($items = [ ])
     {
@@ -17,10 +17,30 @@ class MenuCollection extends Collection
     }
 
 
+    public function enabled()
+    {
+        return $this->filter(function ($item) {
+            return $item->enabled;
+        });
+    }
+
+
     public function hasActive()
     {
         foreach ($this as $item) {
             if ($item->active || $item->items()->hasActive()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    public function hasEnabled()
+    {
+        foreach ($this as $item) {
+            if ($item->enabled || $item->items()->hasEnabled()) {
                 return true;
             }
         }
@@ -157,6 +177,7 @@ class MenuCollection extends Collection
         }
 
         $className = $this->itemClass;
+
         return new $className($item);
     }
 

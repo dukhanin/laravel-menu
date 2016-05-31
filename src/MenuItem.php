@@ -38,6 +38,10 @@ class MenuItem
             $item['url'] = null;
         }
 
+        if ( ! isset( $item['enabled'] )) {
+            $item['enabled'] = true;
+        }
+
         $this->set($item);
     }
 
