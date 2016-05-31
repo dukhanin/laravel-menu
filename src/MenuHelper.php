@@ -4,14 +4,11 @@ namespace Dukhanin\Menu;
 class MenuHelper
 {
 
+    public $collectionClass = 'Dukhanin\Menu\MenuCollection';
+
+    public $itemClass = 'Dukhanin\Menu\MenuItem';
+
     protected $instances;
-
-    protected $config;
-
-
-    public function __construct()
-    {
-    }
 
 
     public function get($key = 'default')
@@ -28,8 +25,9 @@ class MenuHelper
 
     public function factoryMenu($key)
     {
-        $menu = new MenuItemCollection;
-        $key  = strval($key);
+        $menu            = new $this->collectionClass;
+        $menu->itemClass = $this->itemClass;
+        $key             = strval($key);
 
         if (is_array($config = config('laravel-menu.' . $key))) {
             foreach ($config as $itemKey => $item) {

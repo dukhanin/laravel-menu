@@ -1,18 +1,31 @@
 <?php
-// @todo activehandler based on url and routes
+// @todo add enabled customisation
 
 namespace Dukhanin\Menu;
 
 use Illuminate\Support\Collection;
 
-class MenuItemCollection extends Collection
+class MenuCollection extends Collection
 {
+    public $itemClass = 'Dukhanin\Menu\MenuItem';
 
     public function __construct($items = [ ])
     {
         foreach ($this->getArrayableItems($items) as $key => $value) {
             $this->offsetSet($key, $value);
         }
+    }
+
+
+    public function hasActive()
+    {
+        foreach ($this as $item) {
+            if ($item->active || $item->items()->hasActive()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -143,7 +156,8 @@ class MenuItemCollection extends Collection
             return $item;
         }
 
-        return new MenuItem($item);
+        $className = $this->itemClass;
+        return new $className($item);
     }
 
 

@@ -1,16 +1,13 @@
 <?php
 namespace Dukhanin\Menu;
 
+use Route;
+use Request;
+
 class MenuItem
 {
 
     protected $items;
-
-    protected $label;
-
-    protected $active;
-
-    protected $url;
 
     protected $params = [ ];
 
@@ -25,39 +22,39 @@ class MenuItem
             $item = [ 'label' => $item ];
         }
 
-        if (isset( $item['label'] )) {
-            $this->label = $item['label'];
+        if ( ! isset( $item['active'] )) {
+            $item['active'] = [ get_class($this), 'isActive' ];
         }
 
-        if (isset( $item['url'] )) {
-            $this->url = $item['url'];
+        if ( ! isset( $item['route'] )) {
+            $item['route'] = null;
         }
 
-        if (isset( $item['active'] )) {
-            $this->active = $item['active'];
-        } else {
-            $this->active = [ $this, 'activeDefaultHandler' ];
+        if ( ! isset( $item['action'] )) {
+            $item['action'] = null;
         }
 
-        $this->set(array_except($item, [ 'label', 'url', 'active' ]));
-    }
+        if ( ! isset( $item['url'] )) {
+            $item['url'] = null;
+        }
 
-
-    public function label()
-    {
-        return $this->value($this->label);
+        $this->set($item);
     }
 
 
     public function url()
     {
-        return $this->value($this->url);
-    }
+        if ( ! is_null($this->params['url'])) {
+            return $this->value($this->params['url']);
+        }
 
+        if ( ! is_null($this->route)) {
+            return route($this->route);
+        }
 
-    public function active()
-    {
-        return $this->value($this->active);
+        if ( ! is_null($this->action)) {
+            return action($this->action);
+        }
     }
 
 
@@ -91,7 +88,7 @@ class MenuItem
             return $this->{$key}();
         }
 
-        return $this->value( $this->raw($key) );
+        return $this->value($this->raw($key));
     }
 
 
@@ -133,23 +130,37 @@ class MenuItem
     }
 
 
-    protected function activeDefaultHandler()
+    public static function isActive($item)
     {
-        // @todo
+        if ( ! is_null($item->route)) {
+            return Route::current()->getName() == $item->route;
+        }
+
+        if ( ! is_null($item->action)) {
+            return Route::current()->getActionName() == $item->action;
+        }
+
+        if ( ! is_null($item->url)) {
+            $currentPath = trim(Request::path(), '/');
+            $path = trim(parse_url($item->url, PHP_URL_PATH), '/');
+
+            return strpos($path, $currentPath) === 0;
+        }
+
         return false;
     }
 
 
     protected function initItems()
     {
-        $this->items = new MenuItemCollection();
+        $this->items = new MenuCollection();
     }
 
 
     protected function value($value)
     {
         if (is_callable($value)) {
-            $value = call_user_func($value);
+            $value = call_user_func($value, $this);
         }
 
         return $value;
