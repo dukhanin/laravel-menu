@@ -16,5 +16,6 @@
         "psr-4": {
             "Dukhanin\\Menu\\": "src/"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
