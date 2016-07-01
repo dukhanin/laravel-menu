@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "dukhanin/support": "*"
+        "dukhanin/support": "dev-master"
     },
     "autoload": {
         "psr-4": {
