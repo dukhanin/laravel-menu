@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "dukhanin/support": "self.version"
+        "dukhanin/support": "~1"
     },
     "autoload": {
         "psr-4": {
