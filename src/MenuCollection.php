@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 class MenuCollection extends Collection
 {
 
-    public $itemClass = 'Dukhanin\Menu\MenuItem';
+    public $itemClass = MenuItem::class;
 
 
     public function __construct($items = [ ])

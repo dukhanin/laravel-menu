@@ -1,8 +1,8 @@
 <?php
 namespace Dukhanin\Menu;
 
-use Route;
-use Request;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Route;
 
 class MenuItem
 {
@@ -14,9 +14,7 @@ class MenuItem
 
     public function __construct($item)
     {
-        if (is_callable($item)) {
-            $item = call_user_func($item);
-        }
+        $item = $this->value($item);
 
         if (is_string($item)) {
             $item = [ 'label' => $item ];
@@ -40,6 +38,14 @@ class MenuItem
 
         if ( ! isset( $item['enabled'] )) {
             $item['enabled'] = true;
+        }
+
+        if (isset( $item['items'] ) && ! empty( $subitems = $this->value($item['items']) )) {
+            foreach ($subitems as $key => $subitem) {
+                $this->items()->put($key, $subitem);
+            }
+
+            unset($item['items']);
         }
 
         $this->set($item);
@@ -136,6 +142,7 @@ class MenuItem
 
     public static function isActive($item)
     {
+
         if ( ! is_null($item->route)) {
             return Route::current()->getName() == $item->route;
         }
@@ -146,7 +153,7 @@ class MenuItem
 
         if ( ! is_null($item->url)) {
             $currentPath = trim(Request::path(), '/');
-            $path = trim(parse_url($item->url, PHP_URL_PATH), '/');
+            $path        = trim(parse_url($item->url, PHP_URL_PATH), '/');
 
             return starts_with($currentPath, $path);
         }

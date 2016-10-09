@@ -4,11 +4,11 @@ namespace Dukhanin\Menu;
 class MenuHelper
 {
 
-    public $collectionClass = 'Dukhanin\Menu\MenuCollection';
+    public $collectionClass = MenuCollection::class;
 
-    public $itemClass = 'Dukhanin\Menu\MenuItem';
+    public $itemClass = MenuItem::class;
 
-    protected $instances;
+    protected $instances = [ ];
 
 
     public function get($key = 'default')
