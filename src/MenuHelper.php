@@ -11,7 +11,7 @@ class MenuHelper
     protected $instances = [ ];
 
 
-    public function get($key = 'default')
+    public function get($key = 'laravel-menu')
     {
         $key = strval($key);
 
@@ -29,7 +29,7 @@ class MenuHelper
         $menu->itemClass = $this->itemClass;
         $key             = strval($key);
 
-        if (is_array($config = config('laravel-menu.' . $key))) {
+        if (is_array($config = config($key))) {
             foreach ($config as $itemKey => $item) {
                 $menu->put($itemKey, $item);
             }
