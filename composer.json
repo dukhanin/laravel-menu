@@ -10,12 +10,11 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "dukhanin/laravel-support": "dev-master"
+        "dukhanin/laravel-support": "~1.0"
     },
     "autoload": {
         "psr-4": {
             "Dukhanin\\Menu\\": "src/"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }
