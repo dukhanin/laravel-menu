@@ -37,4 +37,10 @@ class MenuHelper
 
         return $menu;
     }
+
+
+    public function __call($method, $arguments)
+    {
+        return $this->get()->$method(...$arguments);
+    }
 }

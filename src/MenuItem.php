@@ -21,7 +21,7 @@ class MenuItem
         }
 
         if ( ! isset( $item['active'] )) {
-            $item['active'] = [ get_class($this), 'isActive' ];
+            $item['active'] = [ get_class($this), 'itemActive' ];
         }
 
         if ( ! isset( $item['route'] )) {
@@ -45,7 +45,7 @@ class MenuItem
                 $this->items()->put($key, $subitem);
             }
 
-            unset($item['items']);
+            unset( $item['items'] );
         }
 
         $this->set($item);
@@ -65,6 +65,27 @@ class MenuItem
         if ( ! is_null($this->action)) {
             return action($this->action);
         }
+    }
+
+
+    public static function itemActive($item)
+    {
+        if ( ! is_null($item->route)) {
+            return Route::current()->getName() == $item->route;
+        }
+
+        if ( ! is_null($item->action)) {
+            return ends_with(Route::current()->getActionName(), $item->action);
+        }
+
+        if ( ! is_null($item->url)) {
+            $currentPath = trim(Request::path(), '/');
+            $path        = trim(parse_url($item->url, PHP_URL_PATH), '/');
+
+            return starts_with($currentPath, $path);
+        }
+
+        return false;
     }
 
 
@@ -137,28 +158,6 @@ class MenuItem
     public function __call($name, $arguments)
     {
         return $this->get($name);
-    }
-
-
-    public static function isActive($item)
-    {
-
-        if ( ! is_null($item->route)) {
-            return Route::current()->getName() == $item->route;
-        }
-
-        if ( ! is_null($item->action)) {
-            return Route::current()->getActionName() == $item->action;
-        }
-
-        if ( ! is_null($item->url)) {
-            $currentPath = trim(Request::path(), '/');
-            $path        = trim(parse_url($item->url, PHP_URL_PATH), '/');
-
-            return starts_with($currentPath, $path);
-        }
-
-        return false;
     }
 
 
