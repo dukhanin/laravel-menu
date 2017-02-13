@@ -1,20 +1,13 @@
 <?php
 namespace Dukhanin\Menu;
 
-use Illuminate\Support\Collection;
+use Dukhanin\Support\Collection;
 
 class MenuCollection extends Collection
 {
 
     public $itemClass = MenuItem::class;
 
-
-    public function __construct($items = [ ])
-    {
-        foreach ($this->getArrayableItems($items) as $key => $value) {
-            $this->offsetSet($key, $value);
-        }
-    }
 
 
     public function enabled()
@@ -90,7 +83,7 @@ class MenuCollection extends Collection
 
             $this->offsetGet($firstKeySegment)->items()->offsetSet(implode('.', $keySegments), $value);
         } else {
-            parent::offsetSet($key, $this->validateItem($value));
+            parent::offsetSet($key, $this->resolveItem($key, $value));
         }
     }
 
@@ -120,7 +113,7 @@ class MenuCollection extends Collection
 
     public function prepend($value, $key = null)
     {
-        $value = $this->validateItem($value);
+        $value = $this->resolveItem($key, $value);
 
         return parent::prepend($value, $key);
     }
@@ -141,7 +134,7 @@ class MenuCollection extends Collection
         }
 
         $key         = str_replace('.', '_', $key);
-        $value       = $this->validateItem($value);
+        $value       = $this->resolveItem($key, $value);
         $this->items = array_before($this->items, $key, $value, $keyBefore);
 
         return $this;
@@ -163,14 +156,14 @@ class MenuCollection extends Collection
         }
 
         $key         = str_replace('.', '_', $key);
-        $value       = $this->validateItem($value);
+        $value       = $this->resolveItem($key, $value);
         $this->items = array_after($this->items, $key, $value, $keyAfter);
 
         return $this;
     }
 
 
-    protected function validateItem($item)
+    public function resolveItem($key, $item)
     {
         if ($item instanceof MenuItem) {
             return $item;
@@ -180,14 +173,5 @@ class MenuCollection extends Collection
 
         return new $className($item);
     }
-
-
-    protected function getArrayableItems($items)
-    {
-        $items = parent::getArrayableItems($items);
-
-        $items = array_map([ $this, 'validateItem' ], $items);
-
-        return $items;
-    }
+    
 }
