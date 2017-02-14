@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "dukhanin/laravel-support": "dev-master"
+        "dukhanin/laravel-support": "1.3.x-dev"
     },
     "autoload": {
         "psr-4": {
