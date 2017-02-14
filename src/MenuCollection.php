@@ -1,13 +1,12 @@
 <?php
 namespace Dukhanin\Menu;
 
-use Dukhanin\Support\Collection;
+use Dukhanin\Support\ResolvedCollection;
 
-class MenuCollection extends Collection
+class MenuCollection extends ResolvedCollection
 {
 
     public $itemClass = MenuItem::class;
-
 
 
     public function enabled()
@@ -83,7 +82,7 @@ class MenuCollection extends Collection
 
             $this->offsetGet($firstKeySegment)->items()->offsetSet(implode('.', $keySegments), $value);
         } else {
-            parent::offsetSet($key, $this->resolveItem($key, $value));
+            parent::offsetSet($key, $this->resolveItemOnSet($key, $value));
         }
     }
 
@@ -94,26 +93,16 @@ class MenuCollection extends Collection
         $firstKeySegment = array_shift($keySegments);
 
         if ($keySegments && $this->offsetExists($firstKeySegment)) {
-            return parent::offsetGet($firstKeySegment)->items()->offsetUnset(implode('.', $keySegments));
+            return parent::offsetUnset($firstKeySegment)->items()->offsetUnset(implode('.', $keySegments));
         } else {
             return parent::offsetUnset($key);
         }
     }
 
 
-    public function get($key, $default = null)
-    {
-        if ($this->offsetExists($key)) {
-            return $this->offsetGet($key);
-        }
-
-        return value($default);
-    }
-
-
     public function prepend($value, $key = null)
     {
-        $value = $this->resolveItem($key, $value);
+        $value = $this->resolveItemOnSet($key, $value);
 
         return parent::prepend($value, $key);
     }
@@ -134,7 +123,7 @@ class MenuCollection extends Collection
         }
 
         $key         = str_replace('.', '_', $key);
-        $value       = $this->resolveItem($key, $value);
+        $value       = $this->resolveItemOnSet($key, $value);
         $this->items = array_before($this->items, $key, $value, $keyBefore);
 
         return $this;
@@ -156,14 +145,14 @@ class MenuCollection extends Collection
         }
 
         $key         = str_replace('.', '_', $key);
-        $value       = $this->resolveItem($key, $value);
+        $value       = $this->resolveItemOnSet($key, $value);
         $this->items = array_after($this->items, $key, $value, $keyAfter);
 
         return $this;
     }
 
 
-    public function resolveItem($key, $item)
+    public function resolveItemOnSet($key, $item)
     {
         if ($item instanceof MenuItem) {
             return $item;
@@ -173,5 +162,5 @@ class MenuCollection extends Collection
 
         return new $className($item);
     }
-    
+
 }
