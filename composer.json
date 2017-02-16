@@ -2,6 +2,7 @@
     "name": "dukhanin/laravel-menu",
     "description": "Laravel 5 Menu",
     "keywords": ["laravel", "menu"],
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Anton Dukhanin",
@@ -10,7 +11,7 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "dukhanin/laravel-support": "~1.3"
+        "dukhanin/laravel-support": "dev-master"
     },
     "autoload": {
         "psr-4": {
