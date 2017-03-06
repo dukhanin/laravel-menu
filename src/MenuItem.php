@@ -9,7 +9,7 @@ class MenuItem
 
     protected $items;
 
-    protected $params = [ ];
+    protected $params = [];
 
 
     public function __construct($item)
@@ -20,32 +20,32 @@ class MenuItem
             $item = [ 'label' => $item ];
         }
 
-        if ( ! isset( $item['active'] )) {
+        if ( ! isset($item['active'])) {
             $item['active'] = [ get_class($this), 'itemActive' ];
         }
 
-        if ( ! isset( $item['route'] )) {
+        if ( ! isset($item['route'])) {
             $item['route'] = null;
         }
 
-        if ( ! isset( $item['action'] )) {
+        if ( ! isset($item['action'])) {
             $item['action'] = null;
         }
 
-        if ( ! isset( $item['url'] )) {
+        if ( ! isset($item['url'])) {
             $item['url'] = null;
         }
 
-        if ( ! isset( $item['enabled'] )) {
+        if ( ! isset($item['enabled'])) {
             $item['enabled'] = true;
         }
 
-        if (isset( $item['items'] ) && ! empty( $subitems = $this->value($item['items']) )) {
+        if (isset($item['items']) && ! empty($subitems = $this->value($item['items']))) {
             foreach ($subitems as $key => $subitem) {
                 $this->items()->put($key, $subitem);
             }
 
-            unset( $item['items'] );
+            unset($item['items']);
         }
 
         $this->set($item);
@@ -107,7 +107,7 @@ class MenuItem
             return $this->{$key};
         }
 
-        if (isset( $this->params[$key] )) {
+        if (isset($this->params[$key])) {
             return $this->params[$key];
         }
     }
@@ -151,7 +151,7 @@ class MenuItem
 
     public function __set($key, $value)
     {
-        return $this->set($key, $value);
+        $this->set($key, $value);
     }
 
 
